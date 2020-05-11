@@ -1,5 +1,5 @@
 import React from 'react'
-import {FlatList, Platform} from 'react-native'
+import {FlatList, Platform, Button} from 'react-native'
 import {useSelector, useDispatch} from 'react-redux'
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 
@@ -7,10 +7,19 @@ import ProductItem from '../../components/shop/ProductItem'
 import * as cartActions from '../../store/actions/cart'
 import CustomHeaderButton from '../../components/UI/HeaderButton'
 
+import Colors from '../../constants/Colors'
+
 const ProductsOverviewScreen = (props) => {
 
     const currentProducts = useSelector(state => state.products.availableProducts)
     const dispatch = useDispatch();
+
+    const selectItemHandler = (product) => {
+        props.navigation.navigate(
+            'ProductsDetail',
+            {product: product}
+        )
+    }
 
     return (
         <FlatList 
@@ -20,13 +29,11 @@ const ProductsOverviewScreen = (props) => {
                                             image        = {itemData.item.imageUrl} 
                                             title        = {itemData.item.title}
                                             price        = {itemData.item.price}
-                                            onViewDetail = {() => props.navigation.navigate(
-                                                'ProductsDetail',
-                                                {product: itemData.item}
-                                            )}
-                                            onAddToCart  = {() => {
+                                            onSelect = {() => selectItemHandler(itemData.item)}>
+                                            <Button title = "View Details" onPress = {() => selectItemHandler(itemData.item)} color = {Colors.primary}/>
+                                            <Button title = "To Cart"      onPress = {() => {
                                                 dispatch(cartActions.addToCart(itemData.item))
-                                            }}/>}>
+                                            }}  color = {Colors.primary}/></ProductItem>}>
         </FlatList>
     );
 }
@@ -34,6 +41,15 @@ const ProductsOverviewScreen = (props) => {
 
 ProductsOverviewScreen.navigationOptions = navData => {
     return {
+    headerLeft: () =>
+        <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
+            <Item 
+                title = "Menu" 
+                iconName = {Platform.OS === 'android' ? 'md-menu' : 'ios-menu'} 
+                onPress = {() => {
+                    navData.navigation.toggleDrawer();
+                }}/>
+        </HeaderButtons>,
     headerRight: () =>
         <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
             <Item 

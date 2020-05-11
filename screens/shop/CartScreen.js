@@ -1,8 +1,12 @@
 import React from 'react'
 import {View, Text, FlatList, StyleSheet, Button} from 'react-native'
-import {useSelector} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
+
+import CartItem from '../../components/shop/CartItem'
 
 import Colors from '../../constants/Colors'
+import * as cartActions from '../../store/actions/cart'
+import * as ordersACtion from '../../store/actions/orders'
 
 const CartScreen = props => {
 
@@ -18,8 +22,10 @@ const CartScreen = props => {
                 sum          : state.cart.items[key].sum
             })
         }
-        return transformedCartItems;
+        return transformedCartItems.sort((a, b) => a.productId > b.productId ? 1: -1);
     })
+
+    const dispatch = useDispatch();
 
     return (
         <View style = {styles.screen}>
@@ -27,11 +33,21 @@ const CartScreen = props => {
                 <Text style = {styles.summaryText}>
                     Total: <Text style = {styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
                 </Text>
-                <Button color = {Colors.accent} title = "Order Now" disabled = {cartItems.length === 0}></Button>
+                <Button color    = {Colors.accent} 
+                        title    = "Order Now" 
+                        disabled = {cartItems.length === 0}
+                        onPress  = {() => {dispatch(ordersACtion.addOrder(cartItems, cartTotalAmount))}}></Button>
             </View>
-            <View>
-                <Text>Cart items</Text>
-            </View>
+            <FlatList 
+                data       = {cartItems}
+                key        = {item => item.productId}
+                renderItem = {itemData => <CartItem 
+                                                quantity  = {itemData.item.quantity}
+                                                title     = {itemData.item.productTitle}
+                                                amount    = {itemData.item.sum}
+                                                deletable = {true}
+                                                onRemove  = {() => {dispatch(cartActions.removeFromCart(itemData.item.productId))}}/>}
+            />
         </View>
     );
 }
