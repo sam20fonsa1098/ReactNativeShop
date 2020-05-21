@@ -8,6 +8,8 @@ import ProductDetailScreen from '../screens/shop/ProductDetailScreen'
 import CartScreen from '../screens/shop/CartScreen'
 import OrdersScreen from '../screens/shop/OrdersScreen'
 import UserProductsScreen from '../screens/user/UserProductsScreen'
+import EditProductsScreen from '../screens/user/EditProductScreen'
+
 import {Platform} from 'react-native'
 import {Ionicons} from '@expo/vector-icons'
 
@@ -76,6 +78,13 @@ const AdminNavigator = createStackNavigator({
         navigationOptions: {
             ...defaultOptions,
             headerTitle: "Your Products"
+        }
+    },
+    EditProducts: {
+        screen: EditProductsScreen,
+        navigationOptions: {
+            ...defaultOptions,
+            headerTitle: "Edit Products"
         }
     }
 }, {
