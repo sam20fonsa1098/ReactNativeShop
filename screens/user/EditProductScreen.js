@@ -1,5 +1,5 @@
-import React, {useEffect, useCallback, useReducer} from 'react'
-import {View, StyleSheet, ScrollView, Platform, Alert, KeyboardAvoidingView} from 'react-native'
+import React, {useEffect, useCallback, useReducer, useState} from 'react'
+import {View, StyleSheet, ScrollView, Platform, Alert, KeyboardAvoidingView, ActivityIndicator, ColorPropType} from 'react-native'
 
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 import CustomHeaderButton from '../../components/UI/HeaderButton'
@@ -8,6 +8,7 @@ import {useDispatch} from 'react-redux'
 import * as productActions from '../../store/actions/products'
 
 import Input from '../../components/UI/Input'
+import Colors from '../../constants/Colors'
 
 const REDUCER_UPDATE = "REDUCER_UPDATE"
 
@@ -40,7 +41,8 @@ const formReducer = (state, actions) => {
 const EditProductScreen = props => {
 
     const product = props.navigation.getParam("product");
-
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState();
     const dispatch = useDispatch();
 
     const [formState, dispatchFormState] = useReducer(formReducer, 
@@ -60,7 +62,13 @@ const EditProductScreen = props => {
             formIsValid: product ? true : false,
         })
 
-    const submitHandler = useCallback(() => {
+    useEffect(() => {
+        if (error) {
+            Alert.alert("An error occured!", error, [{text: "Okay"}]);
+        }
+    }, [error])
+
+    const submitHandler = useCallback(async () => {
         if(!formState.formIsValid) {
             Alert.alert("Wrong input!", "Please check the errors in the form.",[
                 {
@@ -69,19 +77,26 @@ const EditProductScreen = props => {
             ])
             return;
         }
-        if (product) {
-            dispatch(productActions.updateProduct(product.id, 
-                                                  formState.inputValue.title, 
-                                                  formState.inputValue.description, 
-                                                  formState.inputValue.imageUrl))
+        setIsLoading(true);
+        setError(null);
+        try {
+            if (product) {
+                await dispatch(productActions.updateProduct(product.id, 
+                                                      formState.inputValue.title, 
+                                                      formState.inputValue.description, 
+                                                      formState.inputValue.imageUrl))
+            }
+            else {
+                await dispatch(productActions.createProduct(formState.inputValue.title, 
+                                                      formState.inputValue.description, 
+                                                      formState.inputValue.imageUrl,
+                                                      +formState.inputValue.price))
+            }
+            props.navigation.goBack();
+        } catch (error) {
+            setError(error.message);
         }
-        else {
-            dispatch(productActions.createProduct(formState.inputValue.title, 
-                                                  formState.inputValue.description, 
-                                                  formState.inputValue.imageUrl,
-                                                  +formState.inputValue.price))
-        }
-        props.navigation.goBack();
+        setIsLoading(false);
     }, [dispatch, formState])
 
     useEffect(() => {
@@ -98,6 +113,14 @@ const EditProductScreen = props => {
             input   : inputIdentifier
         })
     }, [dispatchFormState]);
+
+    if (isLoading) {
+        return (
+            <View style = {styles.centered}>
+                <ActivityIndicator size = "large" color = {Colors.primary}/>
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView   style = {{flex: 1}}
@@ -183,6 +206,11 @@ EditProductScreen.navigationOptions = navData => {
 const styles = StyleSheet.create({
     form: {
         margin : 20
+    },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
 
