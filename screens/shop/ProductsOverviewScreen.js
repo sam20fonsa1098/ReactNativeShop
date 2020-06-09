@@ -9,7 +9,6 @@ import * as productsActions from '../../store/actions/products'
 import CustomHeaderButton from '../../components/UI/HeaderButton'
 
 import Colors from '../../constants/Colors'
-import products from '../../store/reducers/products'
 
 const ProductsOverviewScreen = (props) => {
 

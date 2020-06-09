@@ -5,9 +5,9 @@ export const SET_ORDERS = "SET_ORDERS"
 
 export const fetchOrders = () => {
     try {
-        return async dispatch => {
+        return async (dispatch, getState) => {
             //any async code you want
-            const response = await fetch('https://shopreact-8d870.firebaseio.com/orders/u1.json');
+            const response = await fetch(`https://shopreact-8d870.firebaseio.com/orders/${getState().auth.userId}.json`);
             if (!response.ok) {
                 throw new Error("Something went wrong!")
             }
@@ -27,9 +27,9 @@ export const fetchOrders = () => {
 }
 
 export const addOrder = (cartItems, totalAmount) => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         const date = new Date();
-        const response = await fetch('https://shopreact-8d870.firebaseio.com/orders/u1.json', {
+        const response = await fetch(`https://shopreact-8d870.firebaseio.com/orders/${getState().auth.userId}.json?auth=${getState().auth.token}`, {
             method:'POST',
             headers: {
                 'Content-Type': 'application/json'

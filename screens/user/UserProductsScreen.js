@@ -1,5 +1,5 @@
 import React from 'react'
-import {FlatList, Button, Platform, Alert} from 'react-native'
+import {FlatList, Button, Platform, Alert, View, Text} from 'react-native'
 import {useSelector} from 'react-redux'
 import {HeaderButtons, Item} from 'react-navigation-header-buttons'
 
@@ -13,7 +13,8 @@ import * as productsActions from '../../store/actions/products'
 
 const UserProductsScreen = props => {
 
-    const userProducts = useSelector(state => state.products.availableProducts)
+    const userProducts = useSelector(state => state.products.userProducts)
+    console.log(userProducts)
     const dispatch = useDispatch();
 
     const editProductHandler = (product) => {
@@ -36,6 +37,16 @@ const UserProductsScreen = props => {
                 }
             }
         ]);
+    }
+
+    if (!userProducts) {
+        return (
+            <View style = {{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text>
+                    No products found, maybe start creating some?
+                </Text>
+            </View>
+        );
     }
 
     return (

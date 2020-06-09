@@ -3,8 +3,8 @@ import {DELETE_PRODUCT, CREATE_PRODUCT, UDPATE_PRODUCT, SET_PRODUCTS} from '../a
 import Product from '../../models/product';
 
 const initialState = {
-    availableProducts: PRODUCTS,
-    userProducts     : PRODUCTS.filter(prod => prod.ownerId == 'u1')
+    availableProducts: [],
+    userProducts     : []
 }
 
 const products = (state = initialState, actions) => {
@@ -12,7 +12,7 @@ const products = (state = initialState, actions) => {
         case SET_PRODUCTS:
             return {
                 availableProducts: actions.products,
-                userProducts: actions.products.filter(prod => prod.ownerId == 'u1')
+                userProducts: actions.userProducts
             };
         case DELETE_PRODUCT:
             return {
@@ -21,8 +21,8 @@ const products = (state = initialState, actions) => {
                 availableProducts: state.availableProducts.filter(product => product.id !== actions.pid)
             };
         case CREATE_PRODUCT:
-            const newProduct = new Product(action.productData.id,
-                                           'u1',
+            const newProduct = new Product(actions.productData.id,
+                                           actions.productData.ownerId,
                                            actions.productData.title,
                                            actions.productData.imageUrl,
                                            actions.productData.description,
