@@ -30,9 +30,9 @@ const ProductsOverviewScreen = (props) => {
     }, [dispatch, setIsLoading, setError]);
 
     useEffect(() => {
-        const willFocusSuc = props.navigation.addListener('willFocus', loadedProducts)
+        const unsubscribe = props.navigation.addListener('focus', loadedProducts)
         return () => {
-            willFocusSuc.remove();
+            unsubscribe();
         }
     }, [loadedProducts])
 
@@ -93,26 +93,27 @@ const ProductsOverviewScreen = (props) => {
 }
 
 
-ProductsOverviewScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
-    headerLeft: () =>
-        <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
-            <Item 
-                title = "Menu" 
-                iconName = {Platform.OS === 'android' ? 'md-menu' : 'ios-menu'} 
-                onPress = {() => {
-                    navData.navigation.toggleDrawer();
-                }}/>
-        </HeaderButtons>,
-    headerRight: () =>
-        <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
-            <Item 
-                title = "Cart" 
-                iconName = {Platform.OS === 'android' ? 'md-cart' : 'ios-cart'} 
-                onPress = {() => {
-                    navData.navigation.navigate('Cart')
-                }}/>
-        </HeaderButtons>
+        headerTitle: "All Products",
+        headerLeft: () =>
+            <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
+                <Item 
+                    title = "Menu" 
+                    iconName = {Platform.OS === 'android' ? 'md-menu' : 'ios-menu'} 
+                    onPress = {() => {
+                        navData.navigation.toggleDrawer();
+                    }}/>
+            </HeaderButtons>,
+        headerRight: () =>
+            <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
+                <Item 
+                    title = "Cart" 
+                    iconName = {Platform.OS === 'android' ? 'md-cart' : 'ios-cart'} 
+                    onPress = {() => {
+                        navData.navigation.navigate('Cart')
+                    }}/>
+            </HeaderButtons>
     }
 }
 

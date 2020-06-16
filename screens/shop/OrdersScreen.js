@@ -53,17 +53,18 @@ const styles = StyleSheet.create({
     }
 })
 
-OrdersScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
-    headerLeft: () =>
-        <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
-            <Item 
-                title = "Menu" 
-                iconName = {Platform.OS === 'android' ? 'md-menu' : 'ios-menu'} 
-                onPress = {() => {
-                    navData.navigation.toggleDrawer();
-                }}/>
-        </HeaderButtons>
+        headerTitle: "Your Orders",
+        headerLeft: () =>
+            <HeaderButtons HeaderButtonComponent = {CustomHeaderButton}>
+                <Item 
+                    title = "Menu" 
+                    iconName = {Platform.OS === 'android' ? 'md-menu' : 'ios-menu'} 
+                    onPress = {() => {
+                        navData.navigation.toggleDrawer();
+                    }}/>
+            </HeaderButtons>
     }
 }
 export default OrdersScreen;

@@ -7,7 +7,7 @@ import * as actionsCart from '../../store/actions/cart'
 
 const ProductDetailScreen = (props) => {
     
-    const product  = props.navigation.getParam("product")
+    const product  = props.route.params.product;
     const dispatch = useDispatch(); 
 
     return (
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     }
 })
 
-ProductDetailScreen.navigationOptions = navData => {
-    const title = navData.navigation.getParam("product").title
+export const screenOptions = navData => {
+    const title = navData.route.params.product.title
     return {
         headerTitle: title
     }
